@@ -28,7 +28,7 @@ contract Bank {
     function deposit(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
 
-        if (amount < MINIMUM_USD) {
+        if (amount < MINIMUM_USD || amount == 0) {
             revert Bank_NotEnoughFunds();
         }
 
