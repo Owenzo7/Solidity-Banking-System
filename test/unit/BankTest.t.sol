@@ -77,6 +77,11 @@ contract BankTest is Test {
         console.log("%s", userEndingBalanceAfterWithdrawal);
     }
 
+    function testRevertWithdrawFundsWithoutMakingAbankAccount() public {
+        vm.expectRevert();
+        bank.withdraw(11 ether);
+    }
+
     // ------------------------------------------------------------------------------->
 
     // ! test transferFail section
@@ -127,5 +132,5 @@ contract BankTest is Test {
 
     // * test pass Deposit section
 
-    function testUserhasDepositedInthebank() public {}
+    // function testUserhasDepositedInthebank() public {}
 }

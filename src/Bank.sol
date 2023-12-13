@@ -25,6 +25,7 @@ contract Bank {
     error Bank_AmountisBeloworEqualtoZero();
     error Bank_AmountforWithdrawalBelowOrEqualtozero();
     error Bank_TransferCalltoTheSameAddressFail();
+    error Bank_BankAccountNotRegisteredWiththeBank();
 
     function deposit(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
@@ -39,9 +40,24 @@ contract Bank {
 
     function withdraw(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
+        // address bankAccounts = s_bankclients[index];
+
+        bool accountExists = false;
+        for (uint256 i = 0; i < s_bankclients.length; i++) {
+            if (s_bankclients[i] == msg.sender) {
+                accountExists = true;
+                break;
+            }
+        }
+
+        if (!accountExists) {
+            revert Bank_BankAccountNotRegisteredWiththeBank();
+        }
+
         if (clientBalances < amount) {
             revert Bank_NotEnoughFundsToWithdraw();
         }
+
         if (amount <= 0) {
             revert Bank_AmountforWithdrawalBelowOrEqualtozero();
         }
