@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.17;
 
+// Took me 290102 gas to deploy this contract
 contract Bank {
     address private immutable i_owner;
     mapping(address client => uint256 AccountBalances) S_ClientToAccountBalances;
@@ -14,6 +15,8 @@ contract Bank {
 
     error Bank_NotEnoughFunds();
     error Bank_NotEnoughFundsToWithdraw();
+    error Bank_NotEnoughFundsToTransfer();
+    error Bank_TransferCallFail();
 
     function deposit() public payable {
         if (msg.value < MINIMUM_USD) {
@@ -30,6 +33,32 @@ contract Bank {
         }
 
         S_ClientToAccountBalances[msg.sender] -= amount;
+    }
+
+    function transferAmount(
+        address clientAddress,
+        uint256 amount,
+        address ToreceiverAddress
+    ) public payable {
+        uint256 startingBalanceforClient = S_ClientToAccountBalances[
+            clientAddress
+        ];
+        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[
+            ToreceiverAddress
+        ];
+
+        if (startingBalanceforClient < amount) {
+            revert Bank_NotEnoughFundsToTransfer();
+        }
+
+        (bool callSuccess, ) = payable(msg.sender).call{value: amount}("");
+
+        if (!callSuccess) {
+            revert Bank_TransferCallFail();
+        }
+
+        startingBalanceforClient -= amount;
+        startingBalanceforreceiver += amount;
     }
 
     // View and getter functions
