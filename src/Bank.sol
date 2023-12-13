@@ -11,7 +11,8 @@ contract Bank {
     uint256 constant MINIMUM_USD = 0.012 ether; //$25
     address[] private s_bankclients;
 
-    constructor() {
+    // Payable saves 200 on gas
+    constructor() payable {
         msg.sender == i_Accountowner;
     }
 
