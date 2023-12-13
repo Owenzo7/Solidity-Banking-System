@@ -24,6 +24,7 @@ contract Bank {
     error Bank_ZeroaddressFail();
     error Bank_AmountisBeloworEqualtoZero();
     error Bank_AmountforWithdrawalBelowOrEqualtozero();
+    error Bank_TransferCalltoTheSameAddressFail();
 
     function deposit(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
@@ -51,7 +52,7 @@ contract Bank {
     function transferAmount(
         address clientAddress,
         uint256 amount,
-        address ToreceiverAddress
+        address payable ToreceiverAddress
     ) public payable {
         uint256 startingBalanceforClient = S_ClientToAccountBalances[
             clientAddress
@@ -60,8 +61,12 @@ contract Bank {
             ToreceiverAddress
         ];
 
-        if (startingBalanceforClient < amount) {
+        if (address(clientAddress).balance < amount) {
             revert Bank_NotEnoughFundsToTransfer();
+        }
+
+        if (clientAddress == ToreceiverAddress) {
+            revert Bank_TransferCalltoTheSameAddressFail();
         }
 
         if (ToreceiverAddress == address(0)) {
@@ -72,7 +77,9 @@ contract Bank {
             revert Bank_AmountisBeloworEqualtoZero();
         }
 
-        (bool callSuccess, ) = payable(msg.sender).call{value: amount}("");
+        (bool callSuccess, ) = payable(ToreceiverAddress).call{value: amount}(
+            ""
+        );
 
         if (!callSuccess) {
             revert Bank_TransferCallFail();

@@ -10,6 +10,7 @@ contract BankTest is Test {
     Bank bank;
     address USER = makeAddr("user");
     address BOB = makeAddr("bob");
+    address ALICE = makeAddr("alice");
     uint256 constant STARTING_BALANCE = 10 ether;
     uint256 constant MINIMUM_VALUE = 0.0000002 ether;
     uint256 constant ZERO = 0;
@@ -25,7 +26,7 @@ contract BankTest is Test {
         assert(address(USER).balance == STARTING_BALANCE);
     }
 
-    // FailDepositSection
+    // ! test FailDepositSection
 
     function testRevertdepositandCheckAccountBalance() public {
         hoax(BOB, MINIMUM_VALUE);
@@ -41,7 +42,7 @@ contract BankTest is Test {
 
     // ------------------------------------------------------------------------->
 
-    //  ! Fail withdrawal Section
+    //  !  test Fail withdrawal Section
 
     function testRevertWithdrawOnlyWithZero() public {
         vm.prank(USER);
@@ -77,4 +78,54 @@ contract BankTest is Test {
     }
 
     // ------------------------------------------------------------------------------->
+
+    // ! test transferFail section
+
+    function testReverttransferofFundsToAZeroAddress() public {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        assert(address(USER).balance == 10 ether);
+
+        vm.expectRevert();
+        bank.transferAmount(USER, 4 ether, payable(address(0)));
+    }
+
+    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent()
+        public
+    {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        assert(address(USER).balance == 10 ether);
+
+        vm.expectRevert();
+        bank.transferAmount(USER, 11 ether, payable(address(0)));
+    }
+
+    function testReverttransferOfFundstoAddressUsingZeroEther() public {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        assert(address(USER).balance == 10 ether);
+
+        vm.expectRevert();
+        bank.transferAmount(USER, 0 ether, payable(ALICE));
+    }
+
+    function testReverttransferofFundsTotheSameAdressFail() public {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        assert(address(USER).balance == 10 ether);
+
+        vm.expectRevert();
+        bank.transferAmount(USER, 6 ether, payable(USER));
+    }
+
+    //  ------------------------------------------------------------------------------------------>
+
+    // * test pass Deposit section
+
+    function testUserhasDepositedInthebank() public {}
 }
