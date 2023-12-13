@@ -3,14 +3,16 @@
 pragma solidity ^0.8.17;
 
 // Took me 290102 gas to deploy this contract
+// Took me 376543 gas to deploy this contract
+//  Took me 283029 gas to deploy this contract
 contract Bank {
-    address private immutable i_owner;
+    address private immutable i_Accountowner;
     mapping(address client => uint256 AccountBalances) S_ClientToAccountBalances;
-    uint256 constant MINIMUM_USD = 0.012 ether;
+    uint256 constant MINIMUM_USD = 0.012 ether; //$25
     address[] private s_bankclients;
 
     constructor() {
-        msg.sender == i_owner;
+        msg.sender == i_Accountowner;
     }
 
     error Bank_NotEnoughFunds();
@@ -19,20 +21,23 @@ contract Bank {
     error Bank_TransferCallFail();
 
     function deposit() public payable {
+        uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
+
         if (msg.value < MINIMUM_USD) {
             revert Bank_NotEnoughFunds();
         }
 
-        S_ClientToAccountBalances[msg.sender] += msg.value;
+        clientBalances += msg.value;
         s_bankclients.push(msg.sender);
     }
 
     function withdraw(uint256 amount) public payable {
-        if (S_ClientToAccountBalances[msg.sender] < amount) {
+        uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
+        if (clientBalances < amount) {
             revert Bank_NotEnoughFundsToWithdraw();
         }
 
-        S_ClientToAccountBalances[msg.sender] -= amount;
+        clientBalances -= amount;
     }
 
     function transferAmount(
@@ -74,7 +79,7 @@ contract Bank {
     }
 
     function getOwner() external view returns (address) {
-        return i_owner;
+        return i_Accountowner;
     }
 
     receive() external payable {
