@@ -298,4 +298,40 @@ contract BankTest is Test {
     }
 
     // --------------------------------------------------------------------------------------------->
+
+    // ! test fail account priviledges
+
+    function testNonBankTellerRevertsremoveBankersFromArray() public {
+        vm.startPrank(USER);
+        // Address USER, BOB Deposited
+        bank.deposit(STARTING_BALANCE);
+
+        vm.expectRevert();
+        bank.removeBankersFromArray(0);
+        vm.stopPrank();
+    }
+
+    function testNonBankTellerRevertsChangeBankersAccountBalances() public {
+        vm.startPrank(USER);
+        // Address USER, BOB Deposited
+        bank.deposit(STARTING_BALANCE);
+
+        vm.expectRevert();
+        bank.changeAccountBalances(USER, 200 ether);
+        vm.stopPrank();
+    }
+
+    //  ------------------------------------------------------------------------------------>
+
+    // * test pass account priviledges
+
+    function testBankTellerCanRemoverBankersFromArray() public {
+        address bankTeller = bank.getOwner();
+
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        vm.prank(bankTeller);
+        bank.removeBankersFromArray(0);
+    }
 }
