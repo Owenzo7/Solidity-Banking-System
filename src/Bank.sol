@@ -17,9 +17,6 @@ contract Bank {
         msg.sender == i_Bankteller;
     }
 
-    error Bank_NottheBankTellertoAccessClientsBalances();
-    error Bank_NottheBankTellertoAccesstheAccountaddresses();
-    error Bank_NottheBankTellertoAccesstheTellerOwner();
     error Bank_NotEnoughFunds();
     error Bank_NotEnoughFundsToWithdraw();
     error Bank_NotEnoughFundsToTransfer();
@@ -30,6 +27,8 @@ contract Bank {
     error Bank_TransferCalltoTheSameAddressFail();
     error Bank_BankAccountNotRegisteredWiththeBank();
     error Bank_BankDepositAmountisANegativeValue();
+    error Bank_NottheBankTellerSoCantUpdateBalances();
+    error Bank_NottheBankTellerSoyouCanRemoveBankersFromArray();
 
     function deposit(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
@@ -137,24 +136,32 @@ contract Bank {
     function getClientToAccountBalances(
         address BankAdress
     ) external view returns (uint256) {
-        if (msg.sender != i_Bankteller) {
-            revert Bank_NottheBankTellertoAccessClientsBalances();
-        }
         return S_ClientToAccountBalances[BankAdress];
     }
 
     function getBankClient(uint256 index) external view returns (address) {
-        if (msg.sender != i_Bankteller) {
-            revert Bank_NottheBankTellertoAccesstheAccountaddresses();
-        }
         return s_bankclients[index];
     }
 
     function getOwner() external view returns (address) {
-        if (msg.sender != i_Bankteller) {
-            revert Bank_NottheBankTellertoAccesstheTellerOwner();
-        }
         return i_Bankteller;
+    }
+
+    function changeAccountBalances(
+        address client,
+        uint256 amount
+    ) external returns (uint256) {
+        if (msg.sender != i_Bankteller) {
+            revert Bank_NottheBankTellerSoCantUpdateBalances();
+        }
+        return S_ClientToAccountBalances[client] = amount;
+    }
+
+    function removeBankersFromArray(uint256 index) external {
+        if (msg.sender != i_Bankteller) {
+            revert Bank_NottheBankTellerSoyouCanRemoveBankersFromArray();
+        }
+        delete s_bankclients[index];
     }
 
     receive() external payable {
