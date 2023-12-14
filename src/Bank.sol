@@ -72,9 +72,17 @@ contract Bank {
         S_ClientToAccountBalances[msg.sender] = clientBalances;
     }
 
-    function transferAmount(address clientAddress, uint256 amount, address payable ToreceiverAddress) public payable {
-        uint256 startingBalanceforClient = S_ClientToAccountBalances[clientAddress];
-        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[ToreceiverAddress];
+    function transferAmount(
+        address clientAddress,
+        uint256 amount,
+        address payable ToreceiverAddress
+    ) public payable {
+        uint256 startingBalanceforClient = S_ClientToAccountBalances[
+            clientAddress
+        ];
+        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[
+            ToreceiverAddress
+        ];
 
         bool accountExists = false;
         for (uint256 i = 0; i < s_bankclients.length; i++) {
@@ -104,7 +112,9 @@ contract Bank {
             revert Bank_AmountisBeloworEqualtoZero();
         }
 
-        (bool callSuccess,) = payable(ToreceiverAddress).call{value: amount}("");
+        (bool callSuccess, ) = payable(ToreceiverAddress).call{value: amount}(
+            ""
+        );
 
         if (!callSuccess) {
             revert Bank_TransferCallFail();
@@ -112,11 +122,18 @@ contract Bank {
 
         startingBalanceforClient -= amount;
         startingBalanceforreceiver += amount;
+
+        S_ClientToAccountBalances[clientAddress] = startingBalanceforClient;
+        S_ClientToAccountBalances[
+            ToreceiverAddress
+        ] = startingBalanceforreceiver;
     }
 
     // View and getter functions
 
-    function getClientToAccountBalances(address BankAdress) external view returns (uint256) {
+    function getClientToAccountBalances(
+        address BankAdress
+    ) external view returns (uint256) {
         return S_ClientToAccountBalances[BankAdress];
     }
 

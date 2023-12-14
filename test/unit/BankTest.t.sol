@@ -199,4 +199,101 @@ contract BankTest is Test {
 
         assertEq(USER, UserAddress);
     }
+
+    //  * test pass transferAmountFunction
+
+    function testUserHasTransferredAmountSucessfully() public {
+        // I have to make sure there is enough gas for the transfer amount transaction
+        vm.deal(address(bank), 10 ether);
+        vm.startPrank(USER);
+        // Address USER, BOB Deposited
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 userBalance = bank.getClientToAccountBalances(USER);
+        assert(userBalance == 10 ether);
+        vm.stopPrank();
+
+        vm.startPrank(BOB);
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 BobBalance = bank.getClientToAccountBalances(BOB);
+        assert(BobBalance == 10 ether);
+        vm.stopPrank();
+
+        assert(BobBalance == 10 ether);
+        assert(userBalance == 10 ether);
+
+        vm.startPrank(USER);
+
+        bank.transferAmount(USER, 1 ether, payable(BOB));
+        vm.stopPrank();
+
+        // ---------------------------------------------->
+    }
+
+    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated()
+        public
+    {
+        // I have to make sure there is enough gas for the transfer amount transaction
+        vm.deal(address(bank), 10 ether);
+        vm.startPrank(USER);
+        // Address USER, BOB Deposited
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 userBalance = bank.getClientToAccountBalances(USER);
+        assert(userBalance == 10 ether);
+        vm.stopPrank();
+
+        vm.startPrank(BOB);
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 BobBalance = bank.getClientToAccountBalances(BOB);
+        assert(BobBalance == 10 ether);
+        vm.stopPrank();
+
+        assert(BobBalance == 10 ether);
+        assert(userBalance == 10 ether);
+
+        vm.startPrank(USER);
+
+        bank.transferAmount(USER, 1 ether, payable(BOB));
+        vm.stopPrank();
+
+        uint256 clientaddressbalance = bank.getClientToAccountBalances(USER);
+
+        assert(clientaddressbalance == 9 ether);
+    }
+
+    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated()
+        public
+    {
+        // I have to make sure there is enough gas for the transfer amount transaction
+        vm.deal(address(bank), 10 ether);
+        vm.startPrank(USER);
+        // Address USER, BOB Deposited
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 userBalance = bank.getClientToAccountBalances(USER);
+        assert(userBalance == 10 ether);
+        vm.stopPrank();
+
+        vm.startPrank(BOB);
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 BobBalance = bank.getClientToAccountBalances(BOB);
+        assert(BobBalance == 10 ether);
+        vm.stopPrank();
+
+        assert(BobBalance == 10 ether);
+        assert(userBalance == 10 ether);
+
+        vm.startPrank(USER);
+
+        bank.transferAmount(USER, 1 ether, payable(BOB));
+        vm.stopPrank();
+
+        uint256 receiverAddressBalance = bank.getClientToAccountBalances(BOB);
+
+        assert(receiverAddressBalance == 11 ether);
+    }
 }
