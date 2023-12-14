@@ -296,4 +296,6 @@ contract BankTest is Test {
 
         assert(receiverAddressBalance == 11 ether);
     }
+
+    // --------------------------------------------------------------------------------------------->
 }
