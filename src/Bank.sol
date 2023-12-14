@@ -26,6 +26,7 @@ contract Bank {
     error Bank_AmountforWithdrawalBelowOrEqualtozero();
     error Bank_TransferCalltoTheSameAddressFail();
     error Bank_BankAccountNotRegisteredWiththeBank();
+    error Bank_BankDepositAmountisANegativeValue();
 
     function deposit(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
@@ -34,7 +35,12 @@ contract Bank {
             revert Bank_NotEnoughFunds();
         }
 
+        if (amount < 0) {
+            revert Bank_BankDepositAmountisANegativeValue();
+        }
+
         clientBalances += amount;
+        S_ClientToAccountBalances[msg.sender] = clientBalances;
         s_bankclients.push(msg.sender);
     }
 
@@ -63,19 +69,24 @@ contract Bank {
         }
 
         clientBalances -= amount;
+        S_ClientToAccountBalances[msg.sender] = clientBalances;
     }
 
-    function transferAmount(
-        address clientAddress,
-        uint256 amount,
-        address payable ToreceiverAddress
-    ) public payable {
-        uint256 startingBalanceforClient = S_ClientToAccountBalances[
-            clientAddress
-        ];
-        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[
-            ToreceiverAddress
-        ];
+    function transferAmount(address clientAddress, uint256 amount, address payable ToreceiverAddress) public payable {
+        uint256 startingBalanceforClient = S_ClientToAccountBalances[clientAddress];
+        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[ToreceiverAddress];
+
+        bool accountExists = false;
+        for (uint256 i = 0; i < s_bankclients.length; i++) {
+            if (s_bankclients[i] == msg.sender) {
+                accountExists = true;
+                break;
+            }
+        }
+
+        if (!accountExists) {
+            revert Bank_BankAccountNotRegisteredWiththeBank();
+        }
 
         if (address(clientAddress).balance < amount) {
             revert Bank_NotEnoughFundsToTransfer();
@@ -93,9 +104,7 @@ contract Bank {
             revert Bank_AmountisBeloworEqualtoZero();
         }
 
-        (bool callSuccess, ) = payable(ToreceiverAddress).call{value: amount}(
-            ""
-        );
+        (bool callSuccess,) = payable(ToreceiverAddress).call{value: amount}("");
 
         if (!callSuccess) {
             revert Bank_TransferCallFail();
@@ -107,9 +116,7 @@ contract Bank {
 
     // View and getter functions
 
-    function getClientToAccountBalances(
-        address BankAdress
-    ) external view returns (uint256) {
+    function getClientToAccountBalances(address BankAdress) external view returns (uint256) {
         return S_ClientToAccountBalances[BankAdress];
     }
 

@@ -14,6 +14,7 @@ contract BankTest is Test {
     uint256 constant STARTING_BALANCE = 10 ether;
     uint256 constant MINIMUM_VALUE = 0.0000002 ether;
     uint256 constant ZERO = 0;
+    int256 negativeEther = -2 ether;
 
     function setUp() public returns (Bank) {
         bank = new Bank();
@@ -128,9 +129,74 @@ contract BankTest is Test {
         bank.transferAmount(USER, 6 ether, payable(USER));
     }
 
+    function testRevertTransferOfFundswithBankAccountthatDoesntExist() public {
+        vm.prank(USER);
+
+        vm.expectRevert();
+        bank.transferAmount(USER, MINIMUM_VALUE, payable(ALICE));
+    }
+
     //  ------------------------------------------------------------------------------------------>
 
     // * test pass Deposit section
 
-    // function testUserhasDepositedInthebank() public {}
+    function testUserhasDepositedInthebankandUpdatedinAccountBalance() public {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        uint256 USERBalance = bank.getClientToAccountBalances(USER);
+
+        assert(USERBalance == 10 ether);
+    }
+
+    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray()
+        public
+    {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        address userDeposited = bank.getBankClient(0);
+
+        assertEq(USER, userDeposited);
+    }
+
+    //  * test pass withdraw section
+
+    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated()
+        public
+    {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        address userDeposited = bank.getBankClient(0);
+
+        assertEq(USER, userDeposited);
+
+        vm.prank(USER);
+        bank.withdraw(STARTING_BALANCE);
+
+        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(
+            USER
+        );
+
+        assert(userBalanceAfterWithdrawal == 0 ether);
+    }
+
+    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray()
+        public
+    {
+        vm.prank(USER);
+        bank.deposit(STARTING_BALANCE);
+
+        address userDeposited = bank.getBankClient(0);
+
+        assertEq(USER, userDeposited);
+
+        vm.prank(USER);
+        bank.withdraw(STARTING_BALANCE);
+
+        address UserAddress = bank.getBankClient(0);
+
+        assertEq(USER, UserAddress);
+    }
 }
