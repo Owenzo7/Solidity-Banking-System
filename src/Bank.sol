@@ -7,14 +7,14 @@ pragma solidity ^0.8.17;
 //  Took me 283029 gas to deploy this contract
 // Took me 373753 gas to deploy this contract
 contract Bank {
-    address private immutable i_Accountowner;
+    address private immutable i_Bankteller;
     mapping(address client => uint256 AccountBalances) S_ClientToAccountBalances;
     uint256 constant MINIMUM_USD = 0.012 ether; //$25
     address[] private s_bankclients;
 
     // Payable saves 200 on gas
     constructor() payable {
-        msg.sender == i_Accountowner;
+        msg.sender == i_Bankteller;
     }
 
     error Bank_NotEnoughFunds();
@@ -142,7 +142,7 @@ contract Bank {
     }
 
     function getOwner() external view returns (address) {
-        return i_Accountowner;
+        return i_Bankteller;
     }
 
     receive() external payable {
