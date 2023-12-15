@@ -12,5 +12,5 @@ deploy sepolia-chain:
 	forge script script/DeployBank.s.sol:DeployBank --rpc-url $(SEPOLIA_RPC_URL) --broadcast --private-key $(SEPOLIA_PRIVATE_KEY)
 
 integration-deposit:
-	forge script script/interactions.s.sol:depositBank --rpc-url $(SEPOLIA_RPC_URL) --broadcast --private-key $(SEPOLIA_PRIVATE_KEY)
+	sudo forge script script/interactions.s.sol:depositBank --rpc-url $(SEPOLIA_RPC_URL) --broadcast --private-key $(SEPOLIA_PRIVATE_KEY)
 
