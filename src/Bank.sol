@@ -37,15 +37,17 @@ contract Bank {
             revert Bank_BankDepositAmountisANegativeValue();
         }
 
+        // Updates
         clientBalances += amount;
         S_ClientToAccountBalances[msg.sender] = clientBalances;
+        // Once a customer deposits amount they get registered in the system(s_bankclients array)
         s_bankclients.push(msg.sender);
     }
 
     function withdraw(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
-        // address bankAccounts = s_bankclients[index];
 
+        // Before withdrawal, it checks to see whether the account is in the system(s_bankclients array) or not
         bool accountExists = false;
         uint256 BankClients = s_bankclients.length;
         for (uint256 i; i < BankClients; i++) {
@@ -67,6 +69,7 @@ contract Bank {
             revert Bank_AmountforWithdrawalBelowOrEqualtozero();
         }
 
+        // Updates
         clientBalances -= amount;
         S_ClientToAccountBalances[msg.sender] = clientBalances;
     }
@@ -75,6 +78,7 @@ contract Bank {
         uint256 startingBalanceforClient = S_ClientToAccountBalances[clientAddress];
         uint256 startingBalanceforreceiver = S_ClientToAccountBalances[ToreceiverAddress];
 
+        // Checks to see if both the receiver and the client address are in the system(s_bankclients array)
         bool accountExists = false;
         uint256 BankClients = s_bankclients.length;
         for (uint256 i; i < BankClients; i++) {
@@ -114,6 +118,7 @@ contract Bank {
             revert Bank_TransferCallFail();
         }
 
+        // Updates
         startingBalanceforClient -= amount;
         startingBalanceforreceiver += amount;
 
@@ -135,6 +140,9 @@ contract Bank {
         return i_Bankteller;
     }
 
+    //  ------------------------------------------------------------------------------------->
+
+    //  ! Bank teller privileges
     function changeAccountBalances(address client, uint256 amount) external returns (uint256) {
         if (msg.sender != i_Bankteller) {
             revert Bank_NottheBankTellerSoCantUpdateBalances();
