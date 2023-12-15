@@ -58,9 +58,10 @@ contract withdrawBank is Script {
 
 contract transferAmountBank is Script {
     uint256 constant STARTING_BALANCE = 10 ether;
+    Bank bank;
     address BOB = makeAddr("Bob");
     address ALICE = makeAddr(" Alice");
-    uint256 constant AMOUNT_TO_BE_TRANSFERRED = 4 ether;
+    uint256 constant AMOUNT_TO_BE_TRANSFERRED = 2 ether;
 
     function bankTransferAmount(address mostRecentlyDeployed) public {
         vm.startBroadcast();
