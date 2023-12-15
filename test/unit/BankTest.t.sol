@@ -5,8 +5,10 @@ pragma solidity ^0.8.17;
 import {Test, console} from "forge-std/Test.sol";
 
 import {Bank} from "../../src/Bank.sol";
+import {DeployBank} from "../../script/DeployBank.s.sol";
 
 contract BankTest is Test {
+    DeployBank deploybank;
     Bank bank;
     address USER = makeAddr("user");
     address BOB = makeAddr("bob");
@@ -17,7 +19,9 @@ contract BankTest is Test {
     int256 negativeEther = -2 ether;
 
     function setUp() public returns (Bank) {
-        bank = new Bank();
+        // bank = new Bank();
+        deploybank = new DeployBank();
+        bank = deploybank.run();
 
         vm.deal(USER, STARTING_BALANCE);
         return bank;
@@ -97,7 +101,9 @@ contract BankTest is Test {
         bank.transferAmount(USER, 4 ether, payable(address(0)));
     }
 
-    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent() public {
+    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -147,7 +153,9 @@ contract BankTest is Test {
         assert(USERBalance == 10 ether);
     }
 
-    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray() public {
+    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -158,7 +166,9 @@ contract BankTest is Test {
 
     //  * test pass withdraw section
 
-    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated() public {
+    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -169,12 +179,16 @@ contract BankTest is Test {
         vm.prank(USER);
         bank.withdraw(STARTING_BALANCE);
 
-        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(USER);
+        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(
+            USER
+        );
 
         assert(userBalanceAfterWithdrawal == 0 ether);
     }
 
-    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray() public {
+    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -221,7 +235,9 @@ contract BankTest is Test {
         // ---------------------------------------------->
     }
 
-    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated() public {
+    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated()
+        public
+    {
         // I have to make sure there is enough gas for the transfer amount transaction
         vm.deal(address(bank), 10 ether);
         vm.startPrank(USER);
@@ -252,7 +268,9 @@ contract BankTest is Test {
         assert(clientaddressbalance == 9 ether);
     }
 
-    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated() public {
+    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated()
+        public
+    {
         // I have to make sure there is enough gas for the transfer amount transaction
         vm.deal(address(bank), 10 ether);
         vm.startPrank(USER);
