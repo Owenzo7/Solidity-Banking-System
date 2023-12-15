@@ -98,7 +98,7 @@ contract BankTest is Test {
         assert(address(USER).balance == 10 ether);
 
         vm.expectRevert();
-        bank.transferAmount(USER, 4 ether, payable(address(0)));
+        bank.transferAmount(payable(USER), 4 ether, payable(address(0)));
     }
 
     function testReverttransferofFundsFromAzeroAddress() public {
@@ -111,17 +111,19 @@ contract BankTest is Test {
         bank.deposit(STARTING_BALANCE);
 
         vm.expectRevert();
-        bank.transferAmount(zeroAddress, 2 ether, payable(BOB));
+        bank.transferAmount(payable(zeroAddress), 2 ether, payable(BOB));
     }
 
-    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent() public {
+    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
         assert(address(USER).balance == 10 ether);
 
         vm.expectRevert();
-        bank.transferAmount(USER, 11 ether, payable(address(0)));
+        bank.transferAmount(payable(USER), 11 ether, payable(address(0)));
     }
 
     function testReverttransferOfFundstoAddressUsingZeroEther() public {
@@ -131,7 +133,7 @@ contract BankTest is Test {
         assert(address(USER).balance == 10 ether);
 
         vm.expectRevert();
-        bank.transferAmount(USER, 0 ether, payable(ALICE));
+        bank.transferAmount(payable(USER), 0 ether, payable(ALICE));
     }
 
     function testReverttransferofFundsTotheSameAdressFail() public {
@@ -141,14 +143,14 @@ contract BankTest is Test {
         assert(address(USER).balance == 10 ether);
 
         vm.expectRevert();
-        bank.transferAmount(USER, 6 ether, payable(USER));
+        bank.transferAmount(payable(USER), 6 ether, payable(USER));
     }
 
     function testRevertTransferOfFundswithBankAccountthatDoesntExist() public {
         vm.prank(USER);
 
         vm.expectRevert();
-        bank.transferAmount(USER, MINIMUM_VALUE, payable(ALICE));
+        bank.transferAmount(payable(USER), MINIMUM_VALUE, payable(ALICE));
     }
 
     //  ------------------------------------------------------------------------------------------>
@@ -164,7 +166,9 @@ contract BankTest is Test {
         assert(USERBalance == 10 ether);
     }
 
-    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray() public {
+    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -175,7 +179,9 @@ contract BankTest is Test {
 
     //  * test pass withdraw section
 
-    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated() public {
+    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -186,12 +192,16 @@ contract BankTest is Test {
         vm.prank(USER);
         bank.withdraw(STARTING_BALANCE);
 
-        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(USER);
+        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(
+            USER
+        );
 
         assert(userBalanceAfterWithdrawal == 0 ether);
     }
 
-    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray() public {
+    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray()
+        public
+    {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -232,13 +242,15 @@ contract BankTest is Test {
 
         vm.startPrank(USER);
 
-        bank.transferAmount(USER, 1 ether, payable(BOB));
+        bank.transferAmount(payable(USER), 1 ether, payable(BOB));
         vm.stopPrank();
 
         // ---------------------------------------------->
     }
 
-    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated() public {
+    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated()
+        public
+    {
         // I have to make sure there is enough gas for the transfer amount transaction
         vm.deal(address(bank), 10 ether);
         vm.startPrank(USER);
@@ -261,7 +273,7 @@ contract BankTest is Test {
 
         vm.startPrank(USER);
 
-        bank.transferAmount(USER, 1 ether, payable(BOB));
+        bank.transferAmount(payable(USER), 1 ether, payable(BOB));
         vm.stopPrank();
 
         uint256 clientaddressbalance = bank.getClientToAccountBalances(USER);
@@ -269,7 +281,9 @@ contract BankTest is Test {
         assert(clientaddressbalance == 9 ether);
     }
 
-    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated() public {
+    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated()
+        public
+    {
         // I have to make sure there is enough gas for the transfer amount transaction
         vm.deal(address(bank), 10 ether);
         vm.startPrank(USER);
@@ -292,7 +306,7 @@ contract BankTest is Test {
 
         vm.startPrank(USER);
 
-        bank.transferAmount(USER, 1 ether, payable(BOB));
+        bank.transferAmount(payable(USER), 1 ether, payable(BOB));
         vm.stopPrank();
 
         uint256 receiverAddressBalance = bank.getClientToAccountBalances(BOB);
