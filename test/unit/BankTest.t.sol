@@ -101,6 +101,19 @@ contract BankTest is Test {
         bank.transferAmount(USER, 4 ether, payable(address(0)));
     }
 
+    function testReverttransferofFundsFromAzeroAddress() public {
+        address zeroAddress = address(0);
+
+        vm.prank(zeroAddress);
+        bank.deposit(STARTING_BALANCE);
+
+        vm.prank(BOB);
+        bank.deposit(STARTING_BALANCE);
+
+        vm.expectRevert();
+        bank.transferAmount(zeroAddress, 2 ether, payable(BOB));
+    }
+
     function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent()
         public
     {
