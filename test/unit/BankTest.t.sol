@@ -112,9 +112,7 @@ contract BankTest is Test {
         bank.transferAmount(payable(address(0)), 2 ether, payable(BOB));
     }
 
-    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent()
-        public
-    {
+    function testReverttransferofFundstheFromAddressBalanceisLessthanAmounttoBeSent() public {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -164,9 +162,7 @@ contract BankTest is Test {
         assert(USERBalance == 10 ether);
     }
 
-    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray()
-        public
-    {
+    function testUserhasDepositedInthebankandItsaddressisreflectedIntheArray() public {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -177,9 +173,7 @@ contract BankTest is Test {
 
     //  * test pass withdraw section
 
-    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated()
-        public
-    {
+    function testUserhasDepositedInthebankwithdrewcashandbankaccountbalupdated() public {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -190,16 +184,12 @@ contract BankTest is Test {
         vm.prank(USER);
         bank.withdraw(STARTING_BALANCE);
 
-        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(
-            USER
-        );
+        uint256 userBalanceAfterWithdrawal = bank.getClientToAccountBalances(USER);
 
         assert(userBalanceAfterWithdrawal == 0 ether);
     }
 
-    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray()
-        public
-    {
+    function testUserhasDepositiedIntheBankwithdrewCashandaddressstillintheArray() public {
         vm.prank(USER);
         bank.deposit(STARTING_BALANCE);
 
@@ -246,9 +236,7 @@ contract BankTest is Test {
         // ---------------------------------------------->
     }
 
-    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated()
-        public
-    {
+    function testUserHasTransferredAmountSuccessfullyandClientAddressBalanceHasBeenUpdated() public {
         // I have to make sure there is enough gas for the transfer amount transaction
         vm.deal(address(bank), 10 ether);
         vm.startPrank(USER);
@@ -279,9 +267,7 @@ contract BankTest is Test {
         assert(clientaddressbalance == 9 ether);
     }
 
-    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated()
-        public
-    {
+    function testUserHasTransferredAmountSuccessfullyandtoReceiverAddressBalanceHasBeenUpdated() public {
         // I have to make sure there is enough gas for the transfer amount transaction
         vm.deal(address(bank), 10 ether);
         vm.startPrank(USER);

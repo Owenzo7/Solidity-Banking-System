@@ -74,17 +74,12 @@ contract Bank {
         S_ClientToAccountBalances[msg.sender] = clientBalances;
     }
 
-    function transferAmount(
-        address payable clientAddress,
-        uint256 amount,
-        address payable ToreceiverAddress
-    ) public payable {
-        uint256 startingBalanceforClient = S_ClientToAccountBalances[
-            clientAddress
-        ];
-        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[
-            ToreceiverAddress
-        ];
+    function transferAmount(address payable clientAddress, uint256 amount, address payable ToreceiverAddress)
+        public
+        payable
+    {
+        uint256 startingBalanceforClient = S_ClientToAccountBalances[clientAddress];
+        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[ToreceiverAddress];
 
         // Checks to see if both the receiver and the client address are in the system(s_bankclients array)
         bool accountExists = false;
@@ -120,9 +115,7 @@ contract Bank {
             revert Bank_AmountisBeloworEqualtoZero();
         }
 
-        (bool callSuccess, ) = payable(ToreceiverAddress).call{value: amount}(
-            ""
-        );
+        (bool callSuccess,) = payable(ToreceiverAddress).call{value: amount}("");
 
         if (!callSuccess) {
             revert Bank_TransferCallFail();
@@ -133,16 +126,12 @@ contract Bank {
         startingBalanceforreceiver += amount;
 
         S_ClientToAccountBalances[clientAddress] = startingBalanceforClient;
-        S_ClientToAccountBalances[
-            ToreceiverAddress
-        ] = startingBalanceforreceiver;
+        S_ClientToAccountBalances[ToreceiverAddress] = startingBalanceforreceiver;
     }
 
     // View and getter functions
 
-    function getClientToAccountBalances(
-        address BankAdress
-    ) external view returns (uint256) {
+    function getClientToAccountBalances(address BankAdress) external view returns (uint256) {
         return S_ClientToAccountBalances[BankAdress];
     }
 
@@ -157,10 +146,7 @@ contract Bank {
     //  ------------------------------------------------------------------------------------->
 
     //  ! Bank teller privileges
-    function changeAccountBalances(
-        address client,
-        uint256 amount
-    ) external returns (uint256) {
+    function changeAccountBalances(address client, uint256 amount) external returns (uint256) {
         if (msg.sender != i_Bankteller) {
             revert Bank_NottheBankTellerSoCantUpdateBalances();
         }
