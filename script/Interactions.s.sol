@@ -15,15 +15,16 @@ contract depositBank is Script {
     address BOB = makeAddr("bob");
     address ALICE = makeAddr("alice");
     uint256 constant STARTING_BALANCE = 10 ether;
-    uint256 constant MINIMUM_VALUE = 0.0000002 ether;
+    uint256 constant MINIMUM_VALUE = 0.0002 ether;
+    uint256 constant WITHDRAWAL_AMOUNT = 4 ether;
+
     uint256 constant ZERO = 0;
 
     function bankDeposit(address mostRecentlyDeployed) public {
         vm.startBroadcast();
-        vm.prank(BOB);
         Bank(payable(mostRecentlyDeployed)).deposit(STARTING_BALANCE);
         vm.stopBroadcast();
-        console.log("Bob Deposited %s", STARTING_BALANCE, "ether");
+        console.log("BOB Deposited %s", STARTING_BALANCE, "ether");
     }
 
     function run() external {
@@ -31,11 +32,38 @@ contract depositBank is Script {
             "Bank",
             block.chainid
         );
-
+        vm.startBroadcast();
         bankDeposit(mostRecentlyDeployed);
+        vm.stopBroadcast();
     }
 }
 
-contract withdrawBank is Script {}
+contract withdrawBank is Script {
+    address USER = makeAddr("user");
+    address BOB = makeAddr("bob");
+    address ALICE = makeAddr("alice");
+    uint256 constant STARTING_BALANCE = 10 ether;
+    uint256 constant MINIMUM_VALUE = 0.0002 ether;
+    uint256 constant WITHDRAWAL_AMOUNT = 4 ether;
 
-contract transferAmount is Script {}
+    uint256 constant ZERO = 0;
+
+    function bankWithdraw(address mostRecentlyDeployed) public {
+        vm.startBroadcast();
+        Bank(payable(mostRecentlyDeployed)).withdraw(WITHDRAWAL_AMOUNT);
+        vm.stopBroadcast();
+        console.log("BOB withdrew %s", WITHDRAWAL_AMOUNT, "ether");
+    }
+
+    function run() external {
+        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment(
+            "Bank",
+            block.chainid
+        );
+        vm.startBroadcast();
+        bankWithdraw(mostRecentlyDeployed);
+        vm.stopBroadcast();
+    }
+}
+
+// contract transferAmount is Script {}
