@@ -109,6 +109,10 @@ contract Bank {
             revert Bank_TransferCalltoTheSameAddressFail();
         }
 
+        if (clientAddress == address(0)) {
+            revert Bank_ZeroaddressFail();
+        }
+
         if (ToreceiverAddress == address(0)) {
             revert Bank_ZeroaddressFail();
         }
