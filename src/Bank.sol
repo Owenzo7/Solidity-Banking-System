@@ -5,7 +5,7 @@ pragma solidity ^0.8.17;
 contract Bank {
     address private immutable i_Bankteller;
     mapping(address client => uint256 AccountBalances) S_ClientToAccountBalances;
-    uint256 constant MINIMUM_USD = 0.012 ether; //$25
+    uint256 constant MINIMUM_USD = 0.012 ether;
     address[] private s_bankclients;
 
     // Payable saves 200 on gas
