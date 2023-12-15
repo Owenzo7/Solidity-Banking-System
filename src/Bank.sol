@@ -6,6 +6,7 @@ pragma solidity ^0.8.17;
 // Took me 376543 gas to deploy this contract
 //  Took me 283029 gas to deploy this contract
 // Took me 373753 gas to deploy this contract
+// Took me 628305 gas to deploy this contract ---> Sepolia
 contract Bank {
     address private immutable i_Bankteller;
     mapping(address client => uint256 AccountBalances) S_ClientToAccountBalances;
@@ -51,7 +52,8 @@ contract Bank {
         // address bankAccounts = s_bankclients[index];
 
         bool accountExists = false;
-        for (uint256 i = 0; i < s_bankclients.length; i++) {
+        uint256 BankClients = s_bankclients.length;
+        for (uint256 i; i < BankClients; i++) {
             if (s_bankclients[i] == msg.sender) {
                 accountExists = true;
                 break;
@@ -74,12 +76,21 @@ contract Bank {
         S_ClientToAccountBalances[msg.sender] = clientBalances;
     }
 
-    function transferAmount(address clientAddress, uint256 amount, address payable ToreceiverAddress) public payable {
-        uint256 startingBalanceforClient = S_ClientToAccountBalances[clientAddress];
-        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[ToreceiverAddress];
+    function transferAmount(
+        address clientAddress,
+        uint256 amount,
+        address payable ToreceiverAddress
+    ) public payable {
+        uint256 startingBalanceforClient = S_ClientToAccountBalances[
+            clientAddress
+        ];
+        uint256 startingBalanceforreceiver = S_ClientToAccountBalances[
+            ToreceiverAddress
+        ];
 
         bool accountExists = false;
-        for (uint256 i = 0; i < s_bankclients.length; i++) {
+        uint256 BankClients = s_bankclients.length;
+        for (uint256 i; i < BankClients; i++) {
             if (s_bankclients[i] == msg.sender) {
                 accountExists = true;
                 break;
@@ -106,7 +117,9 @@ contract Bank {
             revert Bank_AmountisBeloworEqualtoZero();
         }
 
-        (bool callSuccess,) = payable(ToreceiverAddress).call{value: amount}("");
+        (bool callSuccess, ) = payable(ToreceiverAddress).call{value: amount}(
+            ""
+        );
 
         if (!callSuccess) {
             revert Bank_TransferCallFail();
@@ -116,12 +129,16 @@ contract Bank {
         startingBalanceforreceiver += amount;
 
         S_ClientToAccountBalances[clientAddress] = startingBalanceforClient;
-        S_ClientToAccountBalances[ToreceiverAddress] = startingBalanceforreceiver;
+        S_ClientToAccountBalances[
+            ToreceiverAddress
+        ] = startingBalanceforreceiver;
     }
 
     // View and getter functions
 
-    function getClientToAccountBalances(address BankAdress) external view returns (uint256) {
+    function getClientToAccountBalances(
+        address BankAdress
+    ) external view returns (uint256) {
         return S_ClientToAccountBalances[BankAdress];
     }
 
@@ -133,10 +150,14 @@ contract Bank {
         return i_Bankteller;
     }
 
-    function changeAccountBalances(address client, uint256 amount) external returns (uint256) {
+    function changeAccountBalances(
+        address client,
+        uint256 amount
+    ) external returns (uint256) {
         if (msg.sender != i_Bankteller) {
             revert Bank_NottheBankTellerSoCantUpdateBalances();
         }
+
         return S_ClientToAccountBalances[client] = amount;
     }
 
