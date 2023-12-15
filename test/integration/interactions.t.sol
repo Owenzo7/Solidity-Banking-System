@@ -6,13 +6,15 @@ import {Test, console} from "forge-std/Test.sol";
 
 import {Bank} from "../../src/Bank.sol";
 import {DeployBank} from "../../script/DeployBank.s.sol";
-import {depositBank, withdrawBank} from "../../script/Interactions.s.sol";
+import {depositBank, withdrawBank, transferAmountBank} from "../../script/Interactions.s.sol";
 
 contract InteractionsTest is Test {
     depositBank Depositbank;
     withdrawBank Withdrawbank;
+    transferAmountBank Transferamountbank;
     DeployBank deploybank;
     Bank bank;
+    address BOB = makeAddr("BOB");
 
     function setUp() external {
         deploybank = new DeployBank();
@@ -29,5 +31,10 @@ contract InteractionsTest is Test {
         Withdrawbank = new withdrawBank();
 
         Withdrawbank.bankWithdraw(address(bank));
+
+        Transferamountbank = new transferAmountBank();
+
+        vm.expectRevert();
+        Transferamountbank.bankTransferAmount(address(bank));
     }
 }

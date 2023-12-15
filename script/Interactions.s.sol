@@ -56,7 +56,7 @@ contract withdrawBank is Script {
     }
 }
 
-contract transferAmount is Script {
+contract transferAmountBank is Script {
     uint256 constant STARTING_BALANCE = 10 ether;
     address BOB = makeAddr("Bob");
     address ALICE = makeAddr(" Alice");
