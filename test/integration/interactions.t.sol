@@ -13,22 +13,15 @@ contract InteractionsTest is Test {
     withdrawBank Withdrawbank;
     DeployBank deploybank;
     Bank bank;
-    address USER = makeAddr("user");
-    address BOB = makeAddr("bob");
-    address ALICE = makeAddr("alice");
-    uint256 constant STARTING_BALANCE = 10 ether;
-    uint256 constant MINIMUM_VALUE = 0.0000002 ether;
-    uint256 constant ZERO = 0;
-    int256 negativeEther = -2 ether;
 
     function setUp() external {
         deploybank = new DeployBank();
         bank = deploybank.run();
 
-        vm.deal(USER, STARTING_BALANCE);
+        // vm.deal(USER, STARTING_BALANCE);
     }
 
-    function testUserCanDepositInteractions() public {
+    function testUserBankInteractions() public {
         Depositbank = new depositBank();
 
         Depositbank.bankDeposit(address(bank));
