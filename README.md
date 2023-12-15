@@ -10,14 +10,12 @@ The decentralized nature of this bank application ensures security and transpare
 
 ## Points to Consider When Building the Bank Application 💵
 
-1. **The Currency to be used by the Bank shall be definitely be in USD or British Pounds.** (Probably I have to use Chainlink priceFeeds).
+1. **The Currency to be used by the Bank shall be definitely be in Ether.**.
 2. **Definitely need a withdraw function (payable).** I need to make sure that he or she withdraws according to the amount that he or she has in his or her bank account through the use of the mapping.
-3. **Definitely need a deposit function (payable).** Need to update the mapping each time a new user deposits USD or British Pounds into his new account.
+3. **Definitely need a deposit function (payable).** Need to update the mapping each time a new user deposits Eth into his new account.
 4. **It may need a payable or fallback function** just in case some client doesnt use the deposit function and probably sends the ether directly to the Contact address.
 5. **I may need a mapping** to track the users address together with the amount of eth that he or she contains(bank accounts).
 
 ## Technology needed 💻
-
-1. **Chainlink Oracles** ---> For the PriceFeeds.
-2. **Foundry** ----> For testing the contract.
-3. **Solidity** ---> For builiding the whole funtionality.
+1. **Foundry** ----> For testing the contract.
+2. **Solidity** ---> For builiding the whole funtionality.
