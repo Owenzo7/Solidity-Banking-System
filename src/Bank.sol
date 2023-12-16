@@ -25,6 +25,7 @@ contract Bank {
     error Bank_BankDepositAmountisANegativeValue();
     error Bank_NottheBankTellerSoCantUpdateBalances();
     error Bank_NottheBankTellerSoyouCanRemoveBankersFromArray();
+    error Bank_NottheBankTellerYouCannotChangeTheOwner();
 
     function deposit(uint256 amount) public payable {
         uint256 clientBalances = S_ClientToAccountBalances[msg.sender];
