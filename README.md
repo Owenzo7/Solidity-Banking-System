@@ -91,7 +91,3 @@ Interactions occur through a smart contract on the Ethereum blockchain. Deposits
 1. **BankTeller(i_BankTeller)** - Deployer of the protocol, this is a trusted admin that is responsible for tracking account balances, changing account balances and also removing bank accounts from the banking system.
 2. **S_ClientToAccountBalances &&  s_bankclients** - The **S_ClientToAccountBalances mapping** ---> Used to track the clients balances && **s_bankclients address array** ---> This is used to track the account addresses that are registered withing the banking systeme.
 
-
-## Technology needed 💻
-1. **Foundry** ----> For testing the contract.
-2. **Solidity** ---> For builiding the whole funtionality.
